@@ -139,6 +139,7 @@ public class LoadText {
     }
     public List createListString(List mylist){
         List<String> output = new List();
+        List<Bridge> listaux = new List();
         Nodo<User> pAux;
         Nodo<Bridge> pAux2;
         output.appendLast("Usuarios");
@@ -154,7 +155,11 @@ public class LoadText {
                 if(pAux.getValue().getList().isEmpty()){
                     pAux2 = pAux.getValue().getList().getHead();
                     while(pAux2 != null){
-                        output.appendLast(pAux2.getValue().getId1()+ ", " + pAux2.getValue().getId2() + ", " + pAux2.getValue().getYears());
+                        if(this.searchNodo(listaux,pAux2) ){
+                            output.appendLast(pAux2.getValue().getId1()+ ", " + pAux2.getValue().getId2() + ", " + pAux2.getValue().getYears());
+                            listaux.appendLast(pAux2);
+                            
+                        }
                         pAux2 = pAux2.getpNext();
                     }     
                 }
@@ -163,4 +168,14 @@ public class LoadText {
         }
        return output; 
     }
+    public boolean searchNodo(List<Bridge> mylist, Nodo<Bridge> pSearch){
+      Nodo<Bridge> temp = mylist.getHead();
+      while(temp != null){
+          if(pSearch.getValue().getId1().equals(temp.getValue().getId2()) && pSearch.getValue().getId2().equals(temp.getValue().getId1())){
+              return false;
+          }
+          temp = temp.getpNext();
+      }
+      return true;
+}
 }
