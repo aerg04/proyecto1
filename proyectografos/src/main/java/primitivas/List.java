@@ -22,6 +22,20 @@ public class List <T>{
     public boolean isEmpty(){
         return head!=null;
     }
+    public void delete(Nodo pDelete){
+         if(this.isEmpty()){
+             Nodo pAux = head;
+             if(head != pDelete){
+                 head = head.getpNext();
+                 delete(pDelete);
+                 appendFirst(pAux);
+             }else{
+                 head = head.getpNext();
+                 pDelete.setpNext(null);
+                 size--;
+             }
+         }
+     }
     
     public void appendFirst(T x){
         Nodo <T> pNew = new Nodo <> (x);
@@ -31,6 +45,29 @@ public class List <T>{
         }
         else{
             head = pNew;
+        }
+        size++;
+    }
+    public void appendFirst(Nodo pNew){
+//        Nodo <T> pNew = new Nodo <> (x);
+        if(isEmpty()){
+            pNew.setpNext(head);
+            head = pNew;
+        }
+        else{
+            head = pNew;
+        }
+        size++;
+    }
+    public void appendLast(Nodo pNew){
+//        Nodo pNew = new Nodo (x);
+//        Nodo <T> pNew = new Nodo <> (x);
+        if(isEmpty()){
+            last.setpNext(pNew);
+            last = pNew;
+        }
+        else{
+            head = last = pNew;
         }
         size++;
     }
@@ -49,6 +86,17 @@ public class List <T>{
 
     public Nodo getHead() {
         return head;
+    }
+    
+    public String showAttribute(){
+        Nodo pAux = head;
+        String output = "[";
+        while(pAux != null){
+            output += pAux.getValue() + ",";
+            pAux = pAux.getpNext();
+        }
+        output += "]";
+        return output;
     }
 //    public void appendFirst(Nodo pNew){
 ////        Nodo pNew = new Nodo (x);
@@ -76,52 +124,19 @@ public class List <T>{
 //        output += "]";
 //        return output;
 //    }
-    public void delete(Nodo pDele){
 //        Nodo pAux;
-        if(this.isEmpty()){
-            Nodo<T> pAux = this.getHead();
-            if(pAux != pDele){
-                head = pAux.getpNext();
-                delete(pDele);
-                appendFirst(pAux.getValue());
-            }
-            else{
-                head = pDele.getpNext();
-                pDele.setpNext(null);
-                size--;
-            }
-        }
-        }
-//    public void searchPosition(Nodo pNew){
-//        if(isEmpty()){
-//           Nodo pAux = this.getHead();
-//            if(pAux.getInfo() >= pNew.getInfo()){
-//                this.appendFirst(pNew);
-//            }
-//            else{                
-//                head = pAux.getpNext();
-//                delete(pAux);
-//                this.searchPosition(pNew);
-//                appendFirst(pAux);
-//            } 
-//        }
-//        else{
-//            head = last = pNew;
-//        }
-//    }
-//    public void insert(int x){
-//        Nodo pNew = new Nodo(x);
-//        searchPosition(pNew);
-//    }
-//    
-//    public void replace(int vChange, int vNew){
+//    public void delete(Nodo pDele){
 //        if(this.isEmpty()){
-//        Nodo pAux = head;
-//        while(pAux!=null){
-//            if(pAux.getInfo() == vChange)
-//                pAux.setInfo(vNew);
-//            pAux = pAux.getpNext();
-//        }   
+//            Nodo<T> pAux = this.getHead();
+//            if(pAux != pDele){
+//                head = pAux.getpNext();
+//                delete(pDele);
+//                appendFirst(pAux.getValue());
+//            }
+//            else{
+//                head = pDele.getpNext();
+//                pDele.setpNext(null);
+//                size--;
+//            }
 //        }
-//    }
 }

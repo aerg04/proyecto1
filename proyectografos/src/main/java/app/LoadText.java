@@ -10,13 +10,13 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+//import javax.swing.filechooser.FileFilter;
 
 import primitivas.User;
 import primitivas.List;
 import primitivas.Nodo;
 import primitivas.Bridge;
+import primitivas.Graph;
 /**
  *
  * @author DELL
@@ -28,46 +28,52 @@ public class LoadText {
     public List loadText(){
         List<User> Vertex = new List();
         List<Bridge> Bridges = new List();
-//        String Mode = "";
         
         Scanner entrada = null;
-        //Se crea el JFileChooser. Se le indica que la ventana se abra en el directorio actual                    
-        JFileChooser fileChooser = new JFileChooser(".");      
-        //Se crea el filtro. El primer parámetro es el mensaje que se muestra,
-        //el segundo es la extensión de los ficheros que se van a mostrar      
-        FileFilter filtro = new FileNameExtensionFilter("Archivos txt (.txt)", "txt"); 
-        //Se le asigna al JFileChooser el filtro
-        fileChooser.setFileFilter(filtro);
-        //se muestra la ventana
+        JFileChooser fileChooser = new JFileChooser();
+//        fileChooser.showOpenDialog(fileChooser);
+        
         int valor = fileChooser.showOpenDialog(fileChooser);
         if (valor == JFileChooser.APPROVE_OPTION) {
             ruta = fileChooser.getSelectedFile().getAbsolutePath();
-            try {
-                File f = new File(ruta);
-                entrada = new Scanner(f);
-                while (entrada.hasNext()) {
-                    String[] parts = entrada.nextLine().replace(" ", "").split(",");
-                    if(parts.length == 2){
-                        User newuser = new User(parts[0],parts[1]);
-//                        Nodo<User> pNew = new Nodo(newuser);
-                        Vertex.appendLast(newuser);
-                    }else if(parts.length == 3){
-                        Bridge newbridge = new Bridge(parts[0],parts[1],parts[2]);
-//                        Nodo<Bridge> pNew = new Nodo(newbridge);
-                        Bridges.appendLast(newbridge);
-                    
-                }
-//                    System.out.println(entrada.nextLine());
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
-            } finally {
-                if (entrada != null) {
-                    entrada.close();
+            System.out.println(ruta);
+            String[] confirmation = ruta.split("\\.");
+            System.out.println(confirmation[0]);
+            System.out.println(confirmation[1]);
+            System.out.println(confirmation.length);
+            if("txt".equals(confirmation[confirmation.length-1].replace(" ", ""))){
+                    try {
+                        File f = new File(ruta);
+                        entrada = new Scanner(f);
+                        while (entrada.hasNext()) {
+                            String[] parts = entrada.nextLine().replace(" ", "").split(",");
+                            if(parts.length == 2){
+                                User newuser = new User(parts[0],parts[1]);
+        //                        Nodo<User> pNew = new Nodo(newuser);
+                                Vertex.appendLast(newuser);
+                            }else if(parts.length == 3){
+                                Bridge newbridge = new Bridge(parts[0],parts[1],parts[2]);
+                                Bridge newbridge2 = new Bridge(parts[1],parts[0],parts[2]);
+        //                        Nodo<Bridge> pNew = new Nodo(newbridge);
+                                Bridges.appendLast(newbridge);
+                                Bridges.appendLast(newbridge2);
+
+                                }
+        //                    System.out.println(entrada.nextLine());
+                        }
+                    } catch (FileNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    } finally {
+                        if (entrada != null) {
+                            entrada.close();
+                        }
+                    }
+                } else {
+                    System.out.println("No se ha seleccionado ningún archivo txt");
                 }
             }
-        } else {
-            System.out.println("No se ha seleccionado ningún fichero");
+        else{
+            
         }
        
         return appendBridges(Vertex, Bridges);
@@ -100,33 +106,35 @@ public class LoadText {
         output = vertexs;
         return output;
     }
-    public void writeTxt(List mylist){
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-        List<String> myliststring = this.createListString(mylist);
-        Nodo<String> pAux;
-        try
-        {
-            fichero = new FileWriter(ruta);
-            pw = new PrintWriter(fichero);
-            if(myliststring.isEmpty()){
-                pAux = myliststring.getHead();
-                while(pAux != null){
-                    pw.println(pAux.getValue());
-                    pAux = pAux.getpNext();
+    public void writeTxt(Graph mygraph){
+        if(mygraph != null){
+            FileWriter fichero = null;
+            PrintWriter pw = null;
+            List<String> myliststring = this.createListString(mygraph.getList());
+            Nodo<String> pAux;
+            try
+            {
+                fichero = new FileWriter(ruta);
+                pw = new PrintWriter(fichero);
+                if(myliststring.isEmpty()){
+                    pAux = myliststring.getHead();
+                    while(pAux != null){
+                        pw.println(pAux.getValue());
+                        pAux = pAux.getpNext();
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+               try {
+               // Nuevamente aprovechamos el finally para 
+               // asegurarnos que se cierra el fichero.
+               if (null != fichero)
+                  fichero.close();
+               } catch (Exception e2) {
+                  e2.printStackTrace();
+               }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-           try {
-           // Nuevamente aprovechamos el finally para 
-           // asegurarnos que se cierra el fichero.
-           if (null != fichero)
-              fichero.close();
-           } catch (Exception e2) {
-              e2.printStackTrace();
-           }
         }
     }
     public List createListString(List mylist){

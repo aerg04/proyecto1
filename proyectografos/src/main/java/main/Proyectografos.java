@@ -5,7 +5,8 @@
 package main;
 
 import app.LoadText;
-import primitivas.List;
+import primitivas.Graph;
+import interfaz.W1;
 /**
  *
  * @author DELL
@@ -13,10 +14,10 @@ import primitivas.List;
 public class Proyectografos {
 
     public static void main(String[] args) {
-        List grath = new List();
+        W1 w1 = new W1();
+        
 //      System.out.println("Hello World!");
-        LoadText loadtext = new LoadText();
-        grath = loadtext.loadText();
-        loadtext.writeTxt(grath);
+//        grath = loadtext.loadText();
+//        loadtext.writeTxt(graph);
     }
 }

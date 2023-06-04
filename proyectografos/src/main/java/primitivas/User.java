@@ -12,6 +12,15 @@ public class User {
     private String id;
     private String username;
     private List list;
+    private boolean visited;
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
 
     public User(String id, String username) {
         this.id = id;
