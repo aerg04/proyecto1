@@ -13,6 +13,15 @@ public class List <T>{
     Nodo<T> head;
     Nodo<T> last;
     int size;
+
+    public int getSize() {
+        return size;
+    }
+
+    public Nodo<T> getLast() {
+        return last;
+    }
+    
     
     public List() {
         head = null;
@@ -23,28 +32,33 @@ public class List <T>{
         return head!=null;
     }
     public void delete(Nodo pDelete){
+//        System.out.println(this.isEmpty());
          if(this.isEmpty()){
              Nodo pAux = head;
-             if(head != pDelete){
+             if(head.getValue() != pDelete.getValue()){
                  head = head.getpNext();
                  delete(pDelete);
                  appendFirst(pAux);
              }else{
-                 head = head.getpNext();
+                 head = pDelete.getpNext();
+//        System.out.println(this.isEmpty());
                  pDelete.setpNext(null);
                  size--;
              }
+         }else{
+             head = last = null;
          }
      }
     
     public void appendFirst(T x){
-        Nodo <T> pNew = new Nodo <> (x);
+        Nodo <T> pNew = new Nodo <T> (x);
         if(isEmpty()){
             pNew.setpNext(head);
             head = pNew;
         }
         else{
-            head = pNew;
+            head = last = pNew;
+            pNew.setpNext(null);
         }
         size++;
     }
@@ -55,7 +69,8 @@ public class List <T>{
             head = pNew;
         }
         else{
-            head = pNew;
+            head= last = pNew;
+            pNew.setpNext(null);
         }
         size++;
     }
@@ -65,21 +80,26 @@ public class List <T>{
         if(isEmpty()){
             last.setpNext(pNew);
             last = pNew;
+            pNew.setpNext(null);
         }
         else{
             head = last = pNew;
+            pNew.setpNext(null);
         }
         size++;
     }
+    
     public void appendLast(T x){
 //        Nodo pNew = new Nodo (x);
-        Nodo <T> pNew = new Nodo <> (x);
+        Nodo <T> pNew = new Nodo <T> (x);
         if(isEmpty()){
             last.setpNext(pNew);
             last = pNew;
+            pNew.setpNext(null);
         }
         else{
             head = last = pNew;
+            pNew.setpNext(null);
         }
         size++;
     }

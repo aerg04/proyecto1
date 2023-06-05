@@ -38,8 +38,8 @@ public class LoadText {
             ruta = fileChooser.getSelectedFile().getAbsolutePath();
             System.out.println(ruta);
             String[] confirmation = ruta.split("\\.");
-            System.out.println(confirmation[0]);
-            System.out.println(confirmation[1]);
+//            System.out.println(confirmation[0]);
+//            System.out.println(confirmation[1]);
             System.out.println(confirmation.length);
             if("txt".equals(confirmation[confirmation.length-1].replace(" ", ""))){
                     try {
@@ -155,9 +155,9 @@ public class LoadText {
                 if(pAux.getValue().getList().isEmpty()){
                     pAux2 = pAux.getValue().getList().getHead();
                     while(pAux2 != null){
-                        if(this.searchNodo(listaux,pAux2) ){
+                        if(this.searchNodo(listaux,pAux2.getValue()) ){
                             output.appendLast(pAux2.getValue().getId1()+ ", " + pAux2.getValue().getId2() + ", " + pAux2.getValue().getYears());
-                            listaux.appendLast(pAux2);
+                            listaux.appendLast(pAux2.getValue());
                             
                         }
                         pAux2 = pAux2.getpNext();
@@ -168,10 +168,10 @@ public class LoadText {
         }
        return output; 
     }
-    public boolean searchNodo(List<Bridge> mylist, Nodo<Bridge> pSearch){
+    public boolean searchNodo(List<Bridge> mylist, Bridge pSearch){
       Nodo<Bridge> temp = mylist.getHead();
       while(temp != null){
-          if(pSearch.getValue().getId1().equals(temp.getValue().getId2()) && pSearch.getValue().getId2().equals(temp.getValue().getId1())){
+          if(pSearch.getId1().equals(temp.getValue().getId2()) && pSearch.getId2().equals(temp.getValue().getId1())){
               return false;
           }
           temp = temp.getpNext();

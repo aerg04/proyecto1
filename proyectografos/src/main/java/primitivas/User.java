@@ -25,6 +25,7 @@ public class User {
     public User(String id, String username) {
         this.id = id;
         this.username = username;
+        this.list = new List<Bridge>();
     }
 
     public String getId() {

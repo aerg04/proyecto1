@@ -15,7 +15,7 @@ import java.util.Collection;
 import javax.swing.JFrame;
 import org.jgrapht.graph.*;
 import org.jgrapht.ext.JGraphXAdapter;
-import  primitivas.Bridge;
+import  primitivas.*;
 import  primitivas.User;
 import  primitivas.List;
 import  primitivas.Nodo;
@@ -31,17 +31,18 @@ import  primitivas.Nodo;
 
 public class ShowGraph extends JFrame {
             ListenableDirectedWeightedGraph<String, MyEdge>  graph;
-  public ShowGraph(List mylist){
+  public ShowGraph(Graph mygraph){
+            List mylist = mygraph.getList();
             graph = new ListenableDirectedWeightedGraph<String, MyEdge>(MyEdge.class);
             List listbridges = new List();
             JGraphXAdapter<String, MyEdge > jgxAdapter;
 //            Recorrido 1
-            Nodo<User> temp = mylist.getHead();
-            while(temp != null){
-                graph.addVertex(temp.getValue().getId());
-                temp = temp.getpNext();
-            }
             if(mylist.isEmpty()){
+                Nodo<User> temp = mylist.getHead();
+                while(temp != null){
+                    graph.addVertex(temp.getValue().getId());
+                    temp = temp.getpNext();
+                }
                 temp = mylist.getHead();
                 Nodo<Bridge> temp2;
                 MyEdge e1;
@@ -52,7 +53,7 @@ public class ShowGraph extends JFrame {
                             e1 = graph.addEdge(temp2.getValue().getId1(), temp2.getValue().getId2());
                             if(e1 != null){
                                 graph.setEdgeWeight(e1, Double.parseDouble(temp2.getValue().getYears())) ;
-                                listbridges.appendLast(temp2);
+                                listbridges.appendLast(temp2.getValue());
                             }
                         }
                         temp2 = temp2.getpNext();
@@ -92,10 +93,11 @@ public class ShowGraph extends JFrame {
 //          this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
           this.pack();
           this.setVisible(true);
+          this.setLocationRelativeTo(null);
 //          g.setEnabled(false);
   }
   public void disposeGraph(){
-            graph = null;
+//            graph. = null;
   }
   public static class MyEdge extends DefaultWeightedEdge {
         @Override

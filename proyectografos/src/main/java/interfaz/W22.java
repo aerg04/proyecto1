@@ -17,16 +17,27 @@ import primitivas.*;
  */
 public class W22 extends javax.swing.JDialog {
     public Graph mygraph;
-    W33 w3;
+//    W33 w3;
     /**
      * Creates new form W2
      */
     public W22(java.awt.Frame parent, boolean modal, Graph graph) {
         super(parent, modal);
+        initComponents();
         mygraph = graph;
         TextArea.setText(mygraph.showAttributes());
-        initComponents();
+//        this.setSize(474,328);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
     }
+    public boolean isNumeric(String str) { 
+        try {  
+          Double.parseDouble(str);  
+          return true;
+        } catch(NumberFormatException e){  
+          return false;  
+        }  
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,11 +92,12 @@ public class W22 extends javax.swing.JDialog {
         });
         getContentPane().add(NewUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
+        TextArea.setEditable(false);
         TextArea.setColumns(20);
         TextArea.setRows(5);
         jScrollPane1.setViewportView(TextArea);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 40, 290, 230));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 290, 230));
 
         jLabel1.setText("Menu de edición");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, -1, -1));
@@ -103,8 +115,33 @@ public class W22 extends javax.swing.JDialog {
 
     private void NewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewUserActionPerformed
         // TODO add your handling code here:
-        w3 = new W33(new javax.swing.JFrame(), true, mygraph);
-        w3.setVisible(true);
+//        w3 = new W33(new javax.swing.JFrame(), true, mygraph);
+//        w3.setVisible(true);
+        String Userv = JOptionPane.showInputDialog("Ingrese nombre de usuario");
+        if(Userv != null){
+            String Id = JOptionPane.showInputDialog("Ingrese id del usuario");
+            if(Id != null){
+                if(!Userv.isBlank() && !Id.isBlank()){
+                    if(Userv.contains("@")){
+                        if(mygraph.searchNodo(Id) == null && this.isNumeric(Id)){
+                            User newuser = new User(Id, Userv);
+                            mygraph.getList().appendLast(newuser);
+        //                    this.dispose();
+                        }else{
+                            JOptionPane.showMessageDialog(rootPane, "el id no es valido. solo numeros", "Error Id", HEIGHT);
+                        }
+                    }else{
+                            JOptionPane.showMessageDialog(rootPane, "el usuario no es valido. debe contener @", "Error Usuario", HEIGHT);
+                    }      
+                }else{
+                            JOptionPane.showMessageDialog(rootPane, "el usuario ni el id pueden estar vacios", "Error", HEIGHT);
+                }
+                TextArea.setText(mygraph.showAttributes());
+                
+            }
+            
+        }
+        
     }//GEN-LAST:event_NewUserActionPerformed
 
     private void DeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteUserActionPerformed
@@ -113,8 +150,8 @@ public class W22 extends javax.swing.JDialog {
         
         if(mygraph.searchNodo(id) != null){
             mygraph.deleteUser(mygraph.searchNodo(id));
-            TextArea.setText(mygraph.showAttributes());
             JOptionPane.showMessageDialog(rootPane, "usuario eliminado exitosamente", "Operacion finalizada", HEIGHT);
+            TextArea.setText(mygraph.showAttributes());
         }else{
             JOptionPane.showMessageDialog(rootPane, "no existe un usuario con ese id", "Usuario no encontrado", HEIGHT);
         }
@@ -122,40 +159,61 @@ public class W22 extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        String id = JOptionPane.showInputDialog("Ingrese id del usuario a eliminar");
+        String id = JOptionPane.showInputDialog("Ingrese id del primer usuario");
         
         Nodo<User> pAux = mygraph.searchNodo(id);
         if(pAux != null){
 //            mygraph.deleteUser(mygraph.searchNodo(id));
-            String id2 = JOptionPane.showInputDialog("Ingrese el nodo a conectar");
-            String years = JOptionPane.showInputDialog("Ingrese la cantidad de años");
-            
-            
-            if(!id2.isBlank() && !years.isBlank()){
-                Bridge pNew = new Bridge(pAux.getValue().getId(), id2, years);
-                Bridge pNew2 = new Bridge(id2,pAux.getValue().getId(),years);
-//                Nodo jj= new Nodo(pNew2);
+            String id2 = JOptionPane.showInputDialog("Ingrese el id del segundo usuario");
+            Nodo<User> pAux2 = mygraph.searchNodo(id2);
+            if(pAux2 != null){
+                String years = JOptionPane.showInputDialog("Ingrese la cantidad de años");
+
+                if(mygraph.searchBridge(pAux, id2) == null){
+                    if(!years.isBlank() && this.isNumeric(years)){
+                        
+                        Bridge pNew = new Bridge(pAux.getValue().getId(), pAux2.getValue().getId(), years);
+                        Bridge pNew2 = new Bridge(pAux2.getValue().getId(),pAux.getValue().getId(),years);
+        //                Nodo jj= new Nodo(pNew2);
+
+                        mygraph.insertBridge(pNew, pNew2);
+                        TextArea.setText(mygraph.showAttributes());
+                        JOptionPane.showMessageDialog(rootPane, "conexion creada exitosamente", "Operacion finalizada", HEIGHT);
                 
-                mygraph.insertBridge(pNew, pNew2);
-                TextArea.setText(mygraph.showAttributes());
-                JOptionPane.showMessageDialog(rootPane, "usuario eliminado exitosamente", "Operacion finalizada", HEIGHT);
-            }
+            }else{
+                        
+                JOptionPane.showMessageDialog(rootPane, "los años deben ser numeros enteros ", "Error", HEIGHT);
+                    }
+                }else{
+                    
+                JOptionPane.showMessageDialog(rootPane, "ya existe una conexion con ese usuario", "Error", HEIGHT);
+                }    
+                
+            }else{
+                    
+                JOptionPane.showMessageDialog(rootPane, "no existe un usuario con ese id", "Usuario no encontrado", HEIGHT);
+                }
         }else{
             JOptionPane.showMessageDialog(rootPane, "no existe un usuario con ese id", "Usuario no encontrado", HEIGHT);
         }
+        TextArea.setText(mygraph.showAttributes());
+ 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void DeleteBridgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteBridgeActionPerformed
         // TODO add your handling code here:
-        String id = JOptionPane.showInputDialog("Ingrese id del usuario");
+        String id = JOptionPane.showInputDialog("Ingrese id del primer usuario");
         if(mygraph.searchNodo(id) != null){
 //            mygraph.deleteUser(mygraph.searchNodo(id));
             Nodo<User> pAux = mygraph.searchNodo(id);
-            String id2 = JOptionPane.showInputDialog("Ingrese el la dirección de la conexión");
-            if(!id2.isBlank()){
-                Nodo<Bridge> pBridge = mygraph.searchBridge(pAux, id2);
-                if(pBridge != null){
-                    mygraph.deleteBridge(pAux, pBridge);
+            String id2 = JOptionPane.showInputDialog("Ingrese id del segundo usuario");
+            if(mygraph.searchNodo(id2) != null){
+                Nodo<User> pAux2 = mygraph.searchNodo(id2);
+                
+                Nodo<Bridge> pBridge = mygraph.searchBridge(pAux, pAux2.getValue().getId());
+                Nodo<Bridge> pBridge2 = mygraph.searchBridge(pAux2, pAux.getValue().getId());
+                if(pBridge != null && pBridge2 != null){
+                    mygraph.deleteBridge(pBridge, pBridge2);
                     TextArea.setText(mygraph.showAttributes());
                     JOptionPane.showMessageDialog(rootPane, "conexion eliminada exitosamente", "Operacion finalizada", HEIGHT);
                     

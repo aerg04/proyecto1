@@ -18,19 +18,22 @@ public class W1 extends javax.swing.JFrame {
     Graph graph = new Graph( new List<User>());
     LoadText loadtext;
     ShowGraph showgrahp;
-    DFS dfs;
-    BFS bfs;
+    DFS dfs = new DFS();
+    BFS bfs = new BFS();
     /**
      * Creates new form w1
      */
     public W1() {
+        initComponents();
         loadtext = new LoadText();
         bfs = new BFS();
         dfs = new DFS();
         this.setVisible(true);
+//        this.setSize(506,382);
         this.setLocationRelativeTo(null);
-        initComponents();
+        this.setResizable(false);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -70,7 +73,7 @@ public class W1 extends javax.swing.JFrame {
                 BFSActionPerformed(evt);
             }
         });
-        jPanel1.add(BFS, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, -1, -1));
+        jPanel1.add(BFS, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 120, -1));
 
         DFS.setText("Recorrer DFS");
         DFS.addActionListener(new java.awt.event.ActionListener() {
@@ -78,8 +81,9 @@ public class W1 extends javax.swing.JFrame {
                 DFSActionPerformed(evt);
             }
         });
-        jPanel1.add(DFS, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 280, -1, -1));
+        jPanel1.add(DFS, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 280, 120, -1));
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
@@ -92,7 +96,7 @@ public class W1 extends javax.swing.JFrame {
                 ModifyActionPerformed(evt);
             }
         });
-        jPanel1.add(Modify, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 80, -1));
+        jPanel1.add(Modify, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 100, -1));
 
         Visualize.setText("Visualizar");
         Visualize.addActionListener(new java.awt.event.ActionListener() {
@@ -100,7 +104,7 @@ public class W1 extends javax.swing.JFrame {
                 VisualizeActionPerformed(evt);
             }
         });
-        jPanel1.add(Visualize, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 80, -1));
+        jPanel1.add(Visualize, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 100, -1));
 
         SelectFile.setText("Selecionar archivo");
         SelectFile.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +112,7 @@ public class W1 extends javax.swing.JFrame {
                 SelectFileActionPerformed(evt);
             }
         });
-        jPanel1.add(SelectFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 340, -1, -1));
+        jPanel1.add(SelectFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 340, -1, -1));
 
         Save.setText("Guardar");
         Save.addActionListener(new java.awt.event.ActionListener() {
@@ -116,7 +120,7 @@ public class W1 extends javax.swing.JFrame {
                 SaveActionPerformed(evt);
             }
         });
-        jPanel1.add(Save, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 340, -1, -1));
+        jPanel1.add(Save, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 340, -1, -1));
 
         Close.setText("Cerrar");
         Close.addActionListener(new java.awt.event.ActionListener() {
@@ -128,10 +132,15 @@ public class W1 extends javax.swing.JFrame {
 
         jLabel1.setText("Menu");
         jLabel1.setName(""); // NOI18N
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 80, 30));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, 80, 30));
 
         jButton1.setText("Puentes");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, -1, -1));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 100, -1));
 
         jLabel2.setText("Edición");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, -1, -1));
@@ -155,37 +164,74 @@ public class W1 extends javax.swing.JFrame {
 
     private void DFSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DFSActionPerformed
         // TODO add your handling code here:
+        String id = JOptionPane.showInputDialog("Ingrese id del usuario que quiere como primero");
+        Nodo<User> pNew = graph.searchNodo(id);
+        if(pNew != null){
+            JOptionPane.showMessageDialog(rootPane, dfs.stringDFS(dfs.searchDFS(graph, pNew)));         
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "el usuario no existe");
+        }
+        jTextArea1.setText(graph.showAttributes());
     }//GEN-LAST:event_DFSActionPerformed
 
     private void SelectFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectFileActionPerformed
         // TODO add your handling code here:
-        
-        graph = new Graph(loadtext.loadText());
-        jTextArea1.setText(graph.showAttributes());
+        if(!changed){
+            graph = new Graph(loadtext.loadText());
+            jTextArea1.setText(graph.showAttributes());
+        }else{
+            int num = JOptionPane.showConfirmDialog(null,    "Al abrir otro archivo se perdera los cambios, ¿abrir otro archivos?" , "Confirmar",  JOptionPane.YES_NO_OPTION);
+            if(num == 0){
+                graph = new Graph(loadtext.loadText());
+                jTextArea1.setText(graph.showAttributes());
+                }
+            }
     }//GEN-LAST:event_SelectFileActionPerformed
 
     private void VisualizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VisualizeActionPerformed
         // TODO add your handling code here:
-            showgrahp.disposeGraph();
-            showgrahp = new ShowGraph(graph.getList());
-            showgrahp.displayGraph();
+        if(graph.getList().isEmpty()){
+            if(showgrahp == null){
+                showgrahp = new ShowGraph(graph);
+                showgrahp.displayGraph();
+            }else{  
+                showgrahp.disposeGraph();
+                showgrahp = new ShowGraph(graph);
+                showgrahp.displayGraph();
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "primero lea un archivo");
+        }
     }//GEN-LAST:event_VisualizeActionPerformed
 
     private void BFSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BFSActionPerformed
         // TODO add your handling code here:
+        String id = JOptionPane.showInputDialog("Ingrese id del usuario que quiere como primero");
+        Nodo<User> pNew = graph.searchNodo(id);
+        if(pNew != null){
+            JOptionPane.showMessageDialog(rootPane, bfs.stringBFS(bfs.callBFS(graph, pNew)));         
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "el usuario no existe");
+        }
+        jTextArea1.setText(graph.showAttributes());
     }//GEN-LAST:event_BFSActionPerformed
 
     private void ModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModifyActionPerformed
-        // TODO add your handling code here:
-        W22 w2 = new W22 (this, true ,graph);
-        w2.setVisible(true);
-        changed = true;
-        
+        // TODO add your handling code here
+        if(graph.getList().isEmpty()){
+            W22 w2 = new W22 (this, true ,graph);
+            w2.setVisible(true);
+            changed = true;
+            jTextArea1.setText(graph.showAttributes());
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "primero lea un archivo");
+        }
     }//GEN-LAST:event_ModifyActionPerformed
 
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
         // TODO add your handling code here:
         loadtext.writeTxt(graph);
+        changed = false;
     }//GEN-LAST:event_SaveActionPerformed
 
     private void CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseActionPerformed
@@ -194,11 +240,18 @@ public class W1 extends javax.swing.JFrame {
             this.dispose();
         }else{
             int num = JOptionPane.showConfirmDialog(null,    "¿Salir sin guardar?" , "Confirmar",  JOptionPane.YES_NO_OPTION);
-            if(num == 1){
+            if(num == 0){
                 this.dispose();
                 }
             }
     }//GEN-LAST:event_CloseActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(rootPane, "las conexiones que son puentes entre sub comunidades son: " + dfs.searchBridgeF(graph).showAttribute());
+        jTextArea1.setText(graph.showAttributes());
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
